@@ -1,11 +1,12 @@
 package src.domain;
 
 import java.awt.Color;
+import java.io.Serializable;
 
 /**
  * Interface representing a Thing.
  */
-public interface Thing{
+public interface Thing {
     public static final int ROUND = 1;
     public static final int SQUARE = 2;
     public static final int FLOWER = 3;

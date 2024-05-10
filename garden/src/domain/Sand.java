@@ -2,12 +2,12 @@ package src.domain;
 
 
 import java.awt.Color;
+import java.io.Serializable;
 
 /**
  * Class representing sand in the garden.
  */
-public class Sand implements Thing
-{
+public class Sand implements Thing, Serializable {
     private Color color;
     private Garden garden;
     private int row,column;

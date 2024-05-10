@@ -1,11 +1,12 @@
 package src.domain;
 
 import java.awt.Color;
+import java.io.Serializable;
 
 /**
  * Abstract class representing an agent.
  */
-public abstract class Agent {
+public abstract class Agent implements Serializable {
     public final static char UNKNOWN='u', ALIVE='a', DEAD='d';
     protected char state;
     private int time = 0;

@@ -2,12 +2,13 @@ package src.domain;
 
 
 import java.awt.Color;
+import java.io.Serializable;
 
 /**
  * Class representing a flower in the garden.
  * Extends Agent and implements Thing.
  */
-public class Flower extends Agent implements Thing{
+public class Flower extends Agent implements Thing, Serializable {
     protected char nextState;
     protected Color color;
     private Garden garden;

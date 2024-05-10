@@ -1,9 +1,13 @@
 package src.domain;
 
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
 import java.io.File;
 import java.io.Serializable;
-import java.util.*;
-/*No olviden adicionar la documentacion*/
+
+
 public class Garden implements Serializable {
     static public int LENGTH=40;
     private Thing[][] garden;
@@ -123,8 +127,18 @@ public class Garden implements Serializable {
      * @param file where the Garden will be contained
      * @throws GardenException when an error Ocurred
      * */
-    public void save(File file) throws GardenException{
-        throw new GardenException(GardenException.GENERAL_ERROR);
+    public void save(File file) throws GardenException {
+        try {
+            String filePath = file.getAbsolutePath() + File.separator + "garden1.dat";
+            FileOutputStream fileOut = new FileOutputStream(filePath);
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(this);
+            out.close();
+            fileOut.close();
+            System.out.println("Objeto guardado en archivo " + file.getName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**

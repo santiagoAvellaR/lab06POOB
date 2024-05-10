@@ -1,10 +1,12 @@
 package src.domain;
 
 
+import java.io.Serializable;
+
 /**
  * Class representing water in the garden.
  */
-public final class Water  implements Thing{
+public final class Water  implements Thing, Serializable {
     private Garden garden;
     private int row;
     private int column;

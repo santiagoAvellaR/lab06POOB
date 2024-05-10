@@ -1,13 +1,14 @@
 package src.domain;
 
 import java.awt.Color;
+import java.io.Serializable;
 
 
 /**
  * Class representing a gardener in the garden.
  * Extends Agent and implements Thing interface.
  */
-public class Gardener extends Agent implements Thing{
+public class Gardener extends Agent implements Thing, Serializable {
     // instance variables - replace the example below with your own
     protected Color color;
     private Garden garden;

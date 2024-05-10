@@ -1,6 +1,7 @@
 package src.domain;
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.awt.Color;
@@ -10,7 +11,7 @@ import java.awt.Color;
  * Class representing a carnivorous plant in the garden.
  * Extends Flower.
  */
-public class Carnivorous extends Flower{
+public class Carnivorous extends Flower implements Serializable {
     // instance variables - replace the example below with your own
     private Garden garden;
 

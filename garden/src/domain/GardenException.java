@@ -1,6 +1,8 @@
 package src.domain;
 
-public class GardenException extends Exception{
+import java.io.Serializable;
+
+public class GardenException extends Exception implements Serializable {
     public static final String GENERAL_ERROR = "Error";
 
     public GardenException(String message){
