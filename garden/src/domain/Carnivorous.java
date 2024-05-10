@@ -1,4 +1,5 @@
-package domain.src;
+package src.domain;
+
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -91,5 +92,6 @@ public class Carnivorous extends Flower{
         garden.setThing(row, column, this);
     }
 }
+
 
 

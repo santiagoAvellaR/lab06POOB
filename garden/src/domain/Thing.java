@@ -1,4 +1,4 @@
-package domain.src;
+package src.domain;
 
 import java.awt.Color;
 
@@ -38,4 +38,5 @@ public interface Thing{
         return true;
     }
 }
+
 

@@ -1,5 +1,4 @@
-package domain.src;
-
+package src.domain;
 
 import java.io.File;
 import java.io.Serializable;
@@ -108,11 +107,11 @@ public class Garden implements Serializable {
     }
 
     /**
-    * Method that open and read a file for create a Garden
-    * @param file where the Garden is contained
-    * @return the garden contained in the file
-    * @throws GardenException when an error Ocurred
-    * */
+     * Method that open and read a file for create a Garden
+     * @param file where the Garden is contained
+     * @return the garden contained in the file
+     * @throws GardenException when an error Ocurred
+     * */
     public static Garden open(File file) throws GardenException{
         Garden garden = null;
         if(true){throw new GardenException(GardenException.GENERAL_ERROR);}
@@ -175,3 +174,4 @@ public class Garden implements Serializable {
         throw new GardenException("guardar en construccion. Archivo " + file.getName());
     }
 }
+

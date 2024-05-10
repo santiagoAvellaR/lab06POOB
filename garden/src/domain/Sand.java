@@ -1,4 +1,5 @@
-package domain.src;
+package src.domain;
+
 
 import java.awt.Color;
 
@@ -61,4 +62,5 @@ public class Sand implements Thing
         return color;
     }
 }
+
 

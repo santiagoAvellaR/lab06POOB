@@ -1,4 +1,4 @@
-package domain.src;
+package src.domain;
 
 public class GardenException extends Exception{
     public static final String GENERAL_ERROR = "Error";
@@ -7,3 +7,4 @@ public class GardenException extends Exception{
         super(message);
     }
 }
+

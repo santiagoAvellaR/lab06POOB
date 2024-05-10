@@ -1,4 +1,5 @@
-package domain.src;
+package src.domain;
+
 
 import java.awt.Color;
 
@@ -99,4 +100,5 @@ public class Flower extends Agent implements Thing{
         }
     }
 }
+
 

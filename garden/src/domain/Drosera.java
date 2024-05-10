@@ -1,4 +1,5 @@
-package domain.src;
+package src.domain;
+
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -1,4 +1,4 @@
-package domain.src;
+package src.domain;
 
 import java.awt.Color;
 
@@ -194,3 +194,4 @@ public class Gardener extends Agent implements Thing{
         }
     }
 }
+

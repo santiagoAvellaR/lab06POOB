@@ -1,4 +1,4 @@
-package domain.src;
+package src.domain;
 
 
 /**
@@ -30,3 +30,4 @@ public final class Water  implements Thing{
     public void act(){
     }
 }
+
