@@ -1,0 +1,23 @@
+Garden storage
+Sand 0 38
+Sand 0 39
+Flower 10 10
+Gardener 14 22
+Carnivorous 15 21
+Gardener 17 25
+Flower 18 24
+Sand 24 24
+Water 36 38
+Water 36 39
+Drosera 37 36
+Water 37 37
+Water 37 38
+Water 37 39
+Water 38 36
+Water 38 37
+Water 38 38
+Water 38 39
+Water 39 36
+Water 39 37
+Water 39 38
+Water 39 39
