@@ -30,6 +30,13 @@ public class Sand implements Thing, Serializable {
     }
 
     /**
+     * Return the type of the thing
+     * @return type of the thing, Sand in this case
+     */
+    @Override
+    public String getType(){return "Sand";}
+
+    /**
      * Performs an action for the sand.
      * The sand will lighten its color over time until it disappears.
      */

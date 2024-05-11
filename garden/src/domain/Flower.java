@@ -34,8 +34,15 @@ public class Flower extends Agent implements Thing, Serializable {
         setTime(garden.time);
     }
 
+    /**
+     * Return the type of the thing
+     * @return type of the thing, Flower in this case
+     */
+    @Override
+    public String getType(){return "Flower";}
+
     /**Returns the shape
-     @return
+     @return the shape
      */
     public final int shape(){
         return Thing.FLOWER;

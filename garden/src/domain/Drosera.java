@@ -37,6 +37,13 @@ public class Drosera extends Flower implements Serializable
     }
 
     /**
+     * Return the type of the thing
+     * @return type of the thing, Drosera in this case
+     */
+    @Override
+    public String getType(){return "Drosera";}
+
+    /**
      * Finds the closest alive flower or water to the given position.
      *
      * @param targetRow The row position to search around.

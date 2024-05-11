@@ -18,6 +18,12 @@ public interface Thing {
     public void act();
 
     /**
+     * Return the type of the thing
+     * @return type of the thing
+     */
+    public String getType();
+
+    /**
      * Returns the shape of the Thing.
      *
      * @return The shape of the Thing.

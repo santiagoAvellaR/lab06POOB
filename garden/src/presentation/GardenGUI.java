@@ -112,7 +112,9 @@ public class GardenGUI extends JFrame {
             if (result == JFileChooser.APPROVE_OPTION) {
                 File selectedFile = openFileChooser.getSelectedFile();
                 try {
-                    Garden.open(selectedFile);
+                    garden = Garden.open(selectedFile);
+                    repaint();
+                    revalidate();
                 }
                 catch (GardenException e){
                     JOptionPane.showMessageDialog(this, e.getMessage(), "Abrir jardin", JOptionPane.INFORMATION_MESSAGE);
@@ -125,42 +127,61 @@ public class GardenGUI extends JFrame {
     }
 
     private ActionListener optionSave(){
-        return (event)->{
+        return (event) -> {
+            // Crear un JFileChooser
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             int option = fileChooser.showSaveDialog(this);
-            if(option == JFileChooser.APPROVE_OPTION){
+            if(option == JFileChooser.APPROVE_OPTION) {
                 java.io.File selectedFolder = fileChooser.getSelectedFile();
-                try {
-                    garden.save(selectedFolder);
+                JTextField nombreArchivoField = new JTextField();
+                int result = JOptionPane.showConfirmDialog(this, new Object[]{"Ingrese el nombre del archivo:", nombreArchivoField}, "Guardar jardin", JOptionPane.OK_CANCEL_OPTION);
+                if (result == JOptionPane.OK_OPTION && !nombreArchivoField.getText().isEmpty()) {
+                    try {
+                        String nombreArchivo = nombreArchivoField.getText() + ".dat";
+                        java.io.File archivo = new java.io.File(selectedFolder.getAbsolutePath() + java.io.File.separator + nombreArchivo);
+                        garden.save(archivo);
+                    }
+                    catch (GardenException e) {
+                        JOptionPane.showMessageDialog(this, e.getMessage(), "Guardar jardin", JOptionPane.INFORMATION_MESSAGE);
+                    }
                 }
-                catch (GardenException e){
-                    JOptionPane.showMessageDialog(this, e.getMessage(), "Guardar jardin", JOptionPane.INFORMATION_MESSAGE);
+                else {
+                    JOptionPane.showMessageDialog(this, "Nombre de archivo inválido", "Guardar jardin", JOptionPane.ERROR_MESSAGE);
                 }
             }
-            else{
-                JOptionPane.showMessageDialog(this, "Error al guardar archivo", "Guardar jardin", JOptionPane.INFORMATION_MESSAGE);
-
+            else {
+                JOptionPane.showMessageDialog(this, "Cancelado por el usuario", "Guardar jardin", JOptionPane.INFORMATION_MESSAGE);
             }
         };
     }
 
     private ActionListener optionExport(){
         return (event)->{
+            // Crear un JFileChooser
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             int option = fileChooser.showSaveDialog(this);
-            if(option == JFileChooser.APPROVE_OPTION){
+            if(option == JFileChooser.APPROVE_OPTION) {
                 java.io.File selectedFolder = fileChooser.getSelectedFile();
-                try {
-                    garden.export(selectedFolder);
+                JTextField nombreArchivoField = new JTextField();
+                int result = JOptionPane.showConfirmDialog(this, new Object[]{"Ingrese el nombre del archivo:", nombreArchivoField}, "Exportar jardin", JOptionPane.OK_CANCEL_OPTION);
+                if (result == JOptionPane.OK_OPTION && !nombreArchivoField.getText().isEmpty()) {
+                    try {
+                        String nombreArchivo = nombreArchivoField.getText() + ".txt";
+                        java.io.File archivo = new java.io.File(selectedFolder.getAbsolutePath() + java.io.File.separator + nombreArchivo);
+                        garden.export(archivo);
+                    }
+                    catch (GardenException e) {
+                        JOptionPane.showMessageDialog(this, e.getMessage(), "Exportar jardin", JOptionPane.INFORMATION_MESSAGE);
+                    }
                 }
-                catch (GardenException e){
-                    JOptionPane.showMessageDialog(this, e.getMessage(), "Exportar jardin", JOptionPane.INFORMATION_MESSAGE);
+                else {
+                    JOptionPane.showMessageDialog(this, "Nombre de archivo inválido", "Exportar jardin", JOptionPane.ERROR_MESSAGE);
                 }
             }
-            else{
-                JOptionPane.showMessageDialog(this, "Error al exportar archivo", "Exportar jardin", JOptionPane.INFORMATION_MESSAGE);
+            else {
+                JOptionPane.showMessageDialog(this, "Cancelado por el usuario", "Exportar jardin", JOptionPane.INFORMATION_MESSAGE);
             }
         };
     }
@@ -172,7 +193,9 @@ public class GardenGUI extends JFrame {
             if (result == JFileChooser.APPROVE_OPTION) {
                 File selectedFile = openFileChooser.getSelectedFile();
                 try {
-                    Garden.importt(selectedFile);
+                    garden = Garden.importt(selectedFile);
+                    repaint();
+                    revalidate();
                 }
                 catch (GardenException e){
                     JOptionPane.showMessageDialog(this, e.getMessage(), "Importar jardin", JOptionPane.INFORMATION_MESSAGE);

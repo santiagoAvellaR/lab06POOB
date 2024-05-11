@@ -1,11 +1,6 @@
 package src.domain;
 
-import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
-import java.io.FileInputStream;
-import java.io.ObjectInputStream;
-import java.io.File;
-import java.io.Serializable;
+import java.io.*;
 
 
 public class Garden implements Serializable {
@@ -47,6 +42,8 @@ public class Garden implements Serializable {
         //Gardener Daniel =  new Gardener(this, 10, 10);
         someThings();
     }
+
+    private String getType(int row, int column){return garden[row][column].getType();}
 
     /**
      * Gets the length of the garden.
@@ -92,7 +89,15 @@ public class Garden implements Serializable {
         //Drosera santiago = new Drosera(this, 2  , 20);
         Drosera daniel = new Drosera(this, 20, 20);
         Gardener nicolas = new Gardener(this, 25, 25);
-        //Gardener samuel = new Gardener(this, 22, 22);
+        Gardener samuel = new Gardener(this, 22, 22);
+    }
+
+    private void emptyGarden(){
+        for (int r=0;r<LENGTH;r++){
+            for (int c=0;c<LENGTH;c++){
+                garden[r][c]=null;
+            }
+        }
     }
 
     /**
@@ -116,10 +121,14 @@ public class Garden implements Serializable {
      * @return the garden contained in the file
      * @throws GardenException when an error Ocurred
      * */
-    public static Garden open(File file) throws GardenException{
-        Garden garden = null;
-        if(true){throw new GardenException(GardenException.GENERAL_ERROR);}
-        return garden;
+    public static Garden open(File file) throws GardenException {
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(file))) {
+            String s = (String) in.readObject();
+            return (Garden) in.readObject();
+        }
+        catch(Exception e){
+            throw new GardenException(GardenException.GENERAL_ERROR);
+        }
     }
 
     /**
@@ -128,16 +137,13 @@ public class Garden implements Serializable {
      * @throws GardenException when an error Ocurred
      * */
     public void save(File file) throws GardenException {
-        try {
-            String filePath = file.getAbsolutePath() + File.separator + "garden1.dat";
-            FileOutputStream fileOut = new FileOutputStream(filePath);
-            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file, true))) {
+            out.writeObject("Garden storage\n");
             out.writeObject(this);
             out.close();
-            fileOut.close();
-            System.out.println("Objeto guardado en archivo " + file.getName());
-        } catch (Exception e) {
-            e.printStackTrace();
+        }
+        catch (Exception e) {
+            throw new GardenException(GardenException.GENERAL_ERROR);
         }
     }
 
@@ -148,9 +154,43 @@ public class Garden implements Serializable {
      * @throws GardenException when an error Ocurred
      * */
     public static Garden importt(File file) throws GardenException{
-        Garden garden = null;
-        if(true){throw new GardenException("importar en construccion. Archivo " + file.getName());}
-        return garden;
+        Garden garden = new Garden();
+        garden.emptyGarden();
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String linea = reader.readLine();
+            while (linea != null) {
+                String[] info = linea.split(" ");
+                if (info[0].trim().equalsIgnoreCase("Sand")){
+                    new Sand(garden,Integer.parseInt(info[1]),Integer.parseInt(info[2]));
+                    System.out.println("añadiendo sand");
+                }
+                else if (info[0].trim().equalsIgnoreCase(("Water"))){
+                    new Water(garden,Integer.parseInt(info[1]),Integer.parseInt(info[2]));
+                    System.out.println("añadiendo water");
+                }
+                else if (info[0].trim().equalsIgnoreCase("Drosera")){
+                    new Drosera(garden,Integer.parseInt(info[1]),Integer.parseInt(info[2]));
+                    System.out.println("añadiendo Drosera");
+                }
+                else if (info[0].trim().equalsIgnoreCase(("Flower"))){
+                    new Flower(garden,Integer.parseInt(info[1]),Integer.parseInt(info[2]));
+                    System.out.println("añadiendo flower");
+                }
+                else if (info[0].trim().equalsIgnoreCase(("Gardener"))){
+                    new Gardener(garden,Integer.parseInt(info[1]),Integer.parseInt(info[2]));
+                    System.out.println("añadiendo gardener");
+                }
+                else if (info[0].trim().equalsIgnoreCase(("Carnivorous"))){
+                    new Carnivorous(garden,Integer.parseInt(info[1]),Integer.parseInt(info[2]));
+                    System.out.println("añadiendo carnivorous");
+                }
+                linea = reader.readLine();
+            }
+            return garden;
+        }
+        catch (Exception e) {
+            throw new GardenException(GardenException.GENERAL_ERROR);
+        }
     }
 
     /**
@@ -158,14 +198,39 @@ public class Garden implements Serializable {
      * @param file where the Garden will be contained
      * @throws GardenException when an error Ocurred
      * */
-    public void export(File file) throws GardenException{
-        throw new GardenException("exportar en construccion. Archivo " + file.getName());
+    public void export(File file) throws GardenException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
+            printGarden();
+            writer.write("Garden storage\n");
+            for (int i=0;i<LENGTH;i++){
+                for (int j=0;j<LENGTH;j++){
+                    if (garden[i][j]!=null){
+                        String objectType = getType(i, j) + " " + i + " " + j;
+                        writer.write(objectType  + "\n");
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new GardenException(GardenException.GENERAL_ERROR);
+        }
+    }
+
+    public void printGarden(){
+        for (int r=0;r<LENGTH;r++){
+            for (int c=0;c<LENGTH;c++){
+                if (garden[r][c]!=null){
+                    System.out.print(getType(r,c) + " ");
+                }
+            }
+            System.out.println();
+        }
+        System.out.println();
     }
 
 
 
 
-
+    // VERSIONES PASADAS
 
     /**
      * Method that open and read a file for create a Garden
@@ -186,6 +251,27 @@ public class Garden implements Serializable {
      * */
     public void save00(File file) throws GardenException{
         throw new GardenException("guardar en construccion. Archivo " + file.getName());
+    }
+
+    /**
+     * Method that save the garden
+     * @param file where the Garden will be contained
+     * @throws GardenException when an error Ocurred
+     * */
+    public void export00(File file) throws GardenException{
+        throw new GardenException("exportar en construccion. Archivo " + file.getName());
+    }
+
+    /**
+     * Method that open and read a file for create a Garden
+     * @param file where the Garden is contained
+     * @return the garden contained in the file
+     * @throws GardenException when an error Ocurred
+     * */
+    public static Garden importt00(File file) throws GardenException{
+        Garden garden = null;
+        if(true){throw new GardenException("importar en construccion. Archivo " + file.getName());}
+        return garden;
     }
 }
 

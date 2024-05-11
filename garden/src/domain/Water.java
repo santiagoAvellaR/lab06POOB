@@ -26,6 +26,13 @@ public final class Water  implements Thing, Serializable {
     }
 
     /**
+     * Return the type of the thing
+     * @return type of the thing, Water in this case
+     */
+    @Override
+    public String getType(){return "Water";}
+
+    /**
      * Performs an action for the water.
      * Water does not have any specific actions.
      */

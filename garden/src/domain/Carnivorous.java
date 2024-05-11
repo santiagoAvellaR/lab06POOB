@@ -34,6 +34,13 @@ public class Carnivorous extends Flower implements Serializable {
     }
 
     /**
+     * Return the type of the thing
+     * @return type of the thing, Carnivorous in this case
+     */
+    @Override
+    public String getType(){return "Carnivorous";}
+
+    /**
      * Finds the closest alive flower to the given position.
      *
      * @param targetRow The row position to search around.
