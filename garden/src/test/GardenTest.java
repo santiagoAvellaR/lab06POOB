@@ -291,6 +291,46 @@ class GardenTest {
     }
 
     //04 METHODS _ BONO METHODS
+    @Test
+    public void testImportNONEXISTENT_CLASS1(){
+        File file = new File("hola");
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            writer.write("hOLA e 2\n");
+            writer.close();
+            garden = garden.importt(file);
+        } catch (GardenException e) {
+            assertEquals(GardenException.NONEXISTENT_CLASS, e.getMessage());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
+    @Test
+    public void testImportINVALID_FORMAT(){
+        File file = new File("hola");
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            writer.write("Drosera e 2\n");
+            writer.close();
+            garden = garden.importt(file);
+        } catch (GardenException e) {
+            assertEquals(GardenException.INVALID_FORMAT, e.getMessage());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    @Test
+    public void testImportFileNotFoundFinal(){
+        File file = new File("hola");
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            writer.write("Drosera e 2\n");
+            writer.close();
+            file.delete();
+            garden = garden.importt(file);
+        } catch (GardenException e) {
+            assertEquals(GardenException.FILE_NOT_FOUND, e.getMessage());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }
