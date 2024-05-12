@@ -1,8 +1,8 @@
 Garden storage
-Water 0 0
+Water 0 
 Gardener 23 25
 Carnivorous 24 24
-Flower 25 24
+Flower 24
 Drosera 36 36
 Water 36 37
 Water 36 38
@@ -18,4 +18,4 @@ Water 38 39
 Water 39 36
 Water 39 37
 Water 39 38
-Water 39 39
+Water 39 

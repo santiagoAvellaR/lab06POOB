@@ -173,7 +173,7 @@ public class GardenGUI extends JFrame {
                         garden.export(archivo);
                     }
                     catch (GardenException e) {
-                        JOptionPane.showMessageDialog(this, e.getMessage(), "Exportar jardin", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(this, e.getMessage(), "Exportar jardin", JOptionPane.ERROR_MESSAGE);
                     }
                 }
                 else {
@@ -198,11 +198,11 @@ public class GardenGUI extends JFrame {
                     revalidate();
                 }
                 catch (GardenException e){
-                    JOptionPane.showMessageDialog(this, e.getMessage(), "Importar jardin", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(this, e.getMessage(), "Importar jardin", JOptionPane.ERROR_MESSAGE);
                 }
             }
             else{
-                JOptionPane.showMessageDialog(this, "Error al importar archivo", "Importar jardin", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Error al importar archivo", "Importar jardin", JOptionPane.ERROR_MESSAGE);
             }
         };
     }
