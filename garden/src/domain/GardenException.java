@@ -18,10 +18,12 @@ public class GardenException extends Exception implements Serializable {
     public static final String NEGATIVE_COLUMN = "Las columnas no pueden ser negativas. ";
     public static final String INFORMATION_COULD_LOST = "Hay más datos de los esperados, podría perderse informacion. ";
     public static final String SPACE_OCUPIED = "Ya se agregó allí el elemento: ";
+    public static final String ERROR_CREATING_OBJECT = "No se pudo crear";
+    public static final String INVALID_FORMAT = "Formato invalido.";
+    public static final String MISSING_CONSTRUCTOR = "No se encontro el constructor";
 
 
     public GardenException(String message){
         super(message);
     }
 }
-

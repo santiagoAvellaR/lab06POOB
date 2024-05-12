@@ -1,6 +1,8 @@
 package src.domain;
 
 import java.io.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 
 
@@ -41,7 +43,6 @@ public class Garden implements Serializable {
         someThings();
     }
 
-    public String getType(int row, int column){return garden[row][column].getType();}
 
     /**
      * Gets the length of the garden.
@@ -96,14 +97,6 @@ public class Garden implements Serializable {
         Gardener santiago = new Gardener(this, 30, 30);
     }
 
-    private void emptyGarden(){
-        for (int r=0;r<LENGTH;r++){
-            for (int c=0;c<LENGTH;c++){
-                garden[r][c]=null;
-            }
-        }
-    }
-
     /**
      * Runs a time step in the garden, triggering the actions of each element in it.
      */
@@ -117,6 +110,28 @@ public class Garden implements Serializable {
             }
         }
         time++;
+    }
+
+    public String getType(int row, int column){return garden[row][column].getType();}
+
+    private void emptyGarden(){
+        for (int r=0;r<LENGTH;r++){
+            for (int c=0;c<LENGTH;c++){
+                setThing(r, c, null);
+            }
+        }
+    }
+
+    private void printGarden(){
+        for (int r=0;r<LENGTH;r++){
+            for (int c=0;c<LENGTH;c++){
+                if (garden[r][c]!=null){
+                    System.out.print(getType(r,c) + " ");
+                }
+            }
+            System.out.println();
+        }
+        System.out.println();
     }
 
     /**
@@ -158,68 +173,40 @@ public class Garden implements Serializable {
         }
     }
 
-    /**
-     * Method that open and read a file for create a Garden
-     * @param file where the Garden is contained
-     * @return the garden contained in the file
-     * @throws GardenException when an error Ocurred
-     * */
     public static Garden importt(File file) throws GardenException {
         Garden garden = new Garden();
         garden.emptyGarden();
-        int lineNumber = 1;
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            reader.readLine();
-            String linea;
-            lineNumber = 2;
-            while ((linea = reader.readLine()) != null) {
-                if (!linea.trim().isEmpty()) {
-                    String[] info = validateInfo(linea, garden);
-                    if (info[0].trim().equalsIgnoreCase("Sand")) {
-                        new Sand(garden, Integer.parseInt(info[1]), Integer.parseInt(info[2]));
-                    } else if (info[0].trim().equalsIgnoreCase("Water")) {
-                        new Water(garden, Integer.parseInt(info[1]), Integer.parseInt(info[2]));
-                    } else if (info[0].trim().equalsIgnoreCase("Drosera")) {
-                        new Drosera(garden, Integer.parseInt(info[1]), Integer.parseInt(info[2]));
-                    } else if (info[0].trim().equalsIgnoreCase("Flower")) {
-                        new Flower(garden, Integer.parseInt(info[1]), Integer.parseInt(info[2]));
-                    } else if (info[0].trim().equalsIgnoreCase("Gardener")) {
-                        new Gardener(garden, Integer.parseInt(info[1]), Integer.parseInt(info[2]));
-                    } else if (info[0].trim().equalsIgnoreCase("Carnivorous")) {
-                        new Carnivorous(garden, Integer.parseInt(info[1]), Integer.parseInt(info[2]));
-                    } else {
-                        throw new GardenException(GardenException.NONEXISTENT_CLASS + "\nClase obtenida: " + info[0]);
+            String linea = reader.readLine();
+            while (linea != null) {
+                try {
+                    if(!linea.isEmpty()) {
+                        String[] info = linea.split(" ");
+                        String className = "src.domain." + info[0];
+                        Class<?> clazz = Class.forName(className);
+                        Constructor<?> constructor = clazz.getConstructor(Garden.class, int.class, int.class);
+                        Object obj = constructor.newInstance(garden, Integer.parseInt(info[1]), Integer.parseInt(info[2]));
                     }
-                    lineNumber += 1;
+                    linea = reader.readLine();
+
+                } catch (ClassNotFoundException e) {
+                    throw new GardenException(GardenException.NONEXISTENT_CLASS);
+                } catch (NoSuchMethodException e) {
+                    throw new GardenException(GardenException.MISSING_CONSTRUCTOR);
+                } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                    throw new GardenException(GardenException.ERROR_CREATING_OBJECT);
+                } catch (NumberFormatException e) {
+                    throw new GardenException(GardenException.INVALID_FORMAT);
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    throw new GardenException(GardenException.MISSING_INFORMATION);
                 }
             }
-            reader.close();
             return garden;
-        } catch (GardenException e) {
-            throw new GardenException(GardenException.GENERAL_ERROR + " " + e.getMessage() + ". En la linea " + lineNumber);
         } catch (FileNotFoundException e) {
             throw new GardenException(GardenException.FILE_NOT_FOUND);
         } catch (IOException e) {
             throw new GardenException(GardenException.ERROR_DURING_PROCESSING);
-        } catch (Exception e) {
-            throw new GardenException(GardenException.GENERAL_ERROR);
         }
-    }
-
-    private static String[] validateInfo(String linea, Garden garden) throws GardenException {
-        String[] info = linea.split(" ");
-        if (info.length < 3){throw new GardenException(GardenException.MISSING_INFORMATION + "\nLinea obtenida: " + linea);}
-        if (info.length > 3){throw new GardenException(GardenException.INFORMATION_COULD_LOST + "\nLinea obtenido: " + linea);}
-        if (!info[1].matches("[0-9]+")) {throw new GardenException(GardenException.COLUMN_IS_NOT_NUMBER + "\nValor obtenido: " + info[1]);}
-        if (!info[2].matches("[0-9]+")) {throw new GardenException(GardenException.ROW_IS_NOT_NUMBER + "\nValor obtenido: " + info[2]);}
-        if (Integer.parseInt(info[1]) > 39) {throw new GardenException(GardenException.ROW_EXCEEDED + "\nValor obtenido: " +  info[1]);}
-        if (Integer.parseInt(info[2]) > 39) {throw new GardenException(GardenException.COLUMN_EXCEEDED + "\nValor obtenido: " + info[2]);}
-        if (Integer.parseInt(info[1]) < 0) {throw new GardenException(GardenException.NEGATIVE_ROW + "\nValor obtenido: " + info[1]);}
-        if (Integer.parseInt(info[2]) < 0) {throw new GardenException(GardenException.NEGATIVE_COLUMN + "\nValor obtenido: " + info[2]);}
-        int row = Integer.parseInt(info[1]);
-        int column = Integer.parseInt(info[2]);
-        if (garden.getThing(row, column) != null){throw new GardenException(GardenException.SPACE_OCUPIED + garden.getType(row, column));}
-        return info;
     }
 
     /**
@@ -229,7 +216,6 @@ public class Garden implements Serializable {
      * */
     public void export(File file) throws GardenException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
-            printGarden();
             writer.write("Garden storage\n");
             for (int i = 0; i < LENGTH; i++) {
                 for (int j = 0; j < LENGTH; j++) {
@@ -248,17 +234,7 @@ public class Garden implements Serializable {
         }
     }
 
-    public void printGarden(){
-        for (int r=0;r<LENGTH;r++){
-            for (int c=0;c<LENGTH;c++){
-                if (garden[r][c]!=null){
-                    System.out.print(getType(r,c) + " ");
-                }
-            }
-            System.out.println();
-        }
-        System.out.println();
-    }
+
 
 
 
@@ -387,7 +363,6 @@ public class Garden implements Serializable {
      * */
     public void export01(File file) throws GardenException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
-            printGarden();
             writer.write("Garden storage\n");
             for (int i=0;i<LENGTH;i++){
                 for (int j=0;j<LENGTH;j++){
@@ -417,11 +392,9 @@ public class Garden implements Serializable {
             while (linea != null) {
                 try {
                     String[] info = linea.split(" ");
-                    System.out.print(Arrays.toString(info));
                     if (info[0].trim().equalsIgnoreCase("Sand")) {
                         new Sand(garden, Integer.parseInt(info[1]), Integer.parseInt(info[2]));
                     } else if (info[0].trim().equalsIgnoreCase("Water")) {
-                        System.out.println("Creando Water");
                         new Water(garden, Integer.parseInt(info[1]), Integer.parseInt(info[2]));
                     } else if (info[0].trim().equalsIgnoreCase("Drosera")) {
                         new Drosera(garden, Integer.parseInt(info[1]), Integer.parseInt(info[2]));
@@ -462,7 +435,95 @@ public class Garden implements Serializable {
      * */
     public void export02(File file) throws GardenException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
-            printGarden();
+            writer.write("Garden storage\n");
+            for (int i = 0; i < LENGTH; i++) {
+                for (int j = 0; j < LENGTH; j++) {
+                    if (garden[i][j] != null) {
+                        String objectType = getType(i, j) + " " + i + " " + j;
+                        writer.write(objectType + "\n");
+                    }
+                }
+            }
+        } catch (FileNotFoundException e) {
+            throw new GardenException(GardenException.FILE_NOT_FOUND);
+        } catch (IOException e) {
+            throw new GardenException(GardenException.ERROR_DURING_PROCESSING);
+        } catch (Exception e) {
+            throw new GardenException(GardenException.GENERAL_ERROR);
+        }
+    }
+
+    /**
+     * Method that open and read a file for create a Garden
+     * @param file where the Garden is contained
+     * @return the garden contained in the file
+     * @throws GardenException when an error Ocurred
+     * */
+    public static Garden importt03(File file) throws GardenException {
+        Garden garden = new Garden();
+        garden.emptyGarden();
+        int lineNumber = 1;
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            reader.readLine();
+            String linea;
+            lineNumber = 2;
+            while ((linea = reader.readLine()) != null) {
+                if (!linea.trim().isEmpty()) {
+                    String[] info = validateInfo(linea, garden);
+                    if (info[0].trim().equalsIgnoreCase("Sand")) {
+                        new Sand(garden, Integer.parseInt(info[1]), Integer.parseInt(info[2]));
+                    } else if (info[0].trim().equalsIgnoreCase("Water")) {
+                        new Water(garden, Integer.parseInt(info[1]), Integer.parseInt(info[2]));
+                    } else if (info[0].trim().equalsIgnoreCase("Drosera")) {
+                        new Drosera(garden, Integer.parseInt(info[1]), Integer.parseInt(info[2]));
+                    } else if (info[0].trim().equalsIgnoreCase("Flower")) {
+                        new Flower(garden, Integer.parseInt(info[1]), Integer.parseInt(info[2]));
+                    } else if (info[0].trim().equalsIgnoreCase("Gardener")) {
+                        new Gardener(garden, Integer.parseInt(info[1]), Integer.parseInt(info[2]));
+                    } else if (info[0].trim().equalsIgnoreCase("Carnivorous")) {
+                        new Carnivorous(garden, Integer.parseInt(info[1]), Integer.parseInt(info[2]));
+                    } else {
+                        throw new GardenException(GardenException.NONEXISTENT_CLASS + "\nClase obtenida: " + info[0]);
+                    }
+                    lineNumber += 1;
+                }
+            }
+            reader.close();
+            return garden;
+        } catch (GardenException e) {
+            throw new GardenException(GardenException.GENERAL_ERROR + " " + e.getMessage() + ". En la linea " + lineNumber);
+        } catch (FileNotFoundException e) {
+            throw new GardenException(GardenException.FILE_NOT_FOUND);
+        } catch (IOException e) {
+            throw new GardenException(GardenException.ERROR_DURING_PROCESSING);
+        } catch (Exception e) {
+            throw new GardenException(GardenException.GENERAL_ERROR);
+        }
+    }
+
+    private static String[] validateInfo(String linea, Garden garden) throws GardenException {
+        String[] info = linea.split(" ");
+        if (info.length < 3){throw new GardenException(GardenException.MISSING_INFORMATION + "\nLinea obtenida: " + linea);}
+        if (info.length > 3){throw new GardenException(GardenException.INFORMATION_COULD_LOST + "\nLinea obtenido: " + linea);}
+        if (!info[1].matches("[0-9]+")) {throw new GardenException(GardenException.COLUMN_IS_NOT_NUMBER + "\nValor obtenido: " + info[1]);}
+        if (!info[2].matches("[0-9]+")) {throw new GardenException(GardenException.ROW_IS_NOT_NUMBER + "\nValor obtenido: " + info[2]);}
+        if (Integer.parseInt(info[1]) > 39) {throw new GardenException(GardenException.ROW_EXCEEDED + "\nValor obtenido: " +  info[1]);}
+        if (Integer.parseInt(info[2]) > 39) {throw new GardenException(GardenException.COLUMN_EXCEEDED + "\nValor obtenido: " + info[2]);}
+        if (Integer.parseInt(info[1]) < 0) {throw new GardenException(GardenException.NEGATIVE_ROW + "\nValor obtenido: " + info[1]);}
+        if (Integer.parseInt(info[2]) < 0) {throw new GardenException(GardenException.NEGATIVE_COLUMN + "\nValor obtenido: " + info[2]);}
+        int row = Integer.parseInt(info[1]);
+        int column = Integer.parseInt(info[2]);
+        if (garden.getThing(row, column) != null){throw new GardenException(GardenException.SPACE_OCUPIED + garden.getType(row, column));}
+        return info;
+    }
+
+    /**
+     * Method that save the garden
+     * @param file where the Garden will be contained
+     * @throws GardenException when an error Ocurred
+     * */
+    public void export03(File file) throws GardenException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
             writer.write("Garden storage\n");
             for (int i = 0; i < LENGTH; i++) {
                 for (int j = 0; j < LENGTH; j++) {

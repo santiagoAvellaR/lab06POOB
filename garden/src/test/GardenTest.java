@@ -7,20 +7,25 @@ import java.io.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class GardenTest {
-    Garden garden;
+    private Garden garden;
+
+    // 00 METHODS
     @Test
-    public void testSave00(){
-        garden = new Garden();
+    public void testSave00() {
+        Garden garden = new Garden();
         File file = new File("garden");
         try {
-            garden.save(file);
-            assertTrue(file.exists());
+            garden.save00(file);
+            fail("Did not throw exception");
         } catch (GardenException e) {
-            assertEquals("guardar en construccion. Archivo " + file.getName() , e);
-        }finally {
-            file.delete();
+            assertEquals("guardar en construccion. Archivo " + file.getName(), e.getMessage());
+        } finally {
+            if (file.exists()) {
+                file.delete();
+            }
         }
     }
+
     @Test
     public void testOpen00() {
         garden = new Garden();
@@ -33,6 +38,7 @@ class GardenTest {
             assertEquals("abrir en construccion. Archivo " + file.getName(), e.getMessage());
         }
     }
+
     @Test
     public void testImport00() {
         garden = new Garden();
@@ -41,10 +47,10 @@ class GardenTest {
             garden = garden.importt00(file);
             fail("Did not throw exception");
         } catch (GardenException e) {
-
             assertEquals("importar en construccion. Archivo " + file.getName(), e.getMessage());
         }
     }
+
     @Test
     public void testExport00() {
         garden = new Garden();
@@ -57,6 +63,8 @@ class GardenTest {
             assertEquals("exportar en construccion. Archivo " + file.getName(), e.getMessage());
         }
     }
+
+    // 01 METHODS
     @Test
     public void testSave01Error(){
         garden = new Garden();
@@ -69,6 +77,7 @@ class GardenTest {
             assertEquals(GardenException.GENERAL_ERROR, e.getMessage());
         }
     }
+
     @Test
     public void testOpen01Error(){
         garden = new Garden();
@@ -81,6 +90,7 @@ class GardenTest {
             assertEquals(GardenException.GENERAL_ERROR, e.getMessage());
         }
     }
+
     @Test
     public void testImport01Error(){
         garden = new Garden();
@@ -93,6 +103,7 @@ class GardenTest {
             assertEquals(GardenException.GENERAL_ERROR, e.getMessage());
         }
     }
+
     @Test
     public void testExport01Error(){
         garden = new Garden();
@@ -104,6 +115,8 @@ class GardenTest {
             assertEquals(GardenException.GENERAL_ERROR, e.getMessage());
         }
     }
+
+    // 02 TEST
     @Test
     public void testImport02MISSING_INFORMATION() {
         File file = new File("hola");
@@ -118,6 +131,7 @@ class GardenTest {
             throw new RuntimeException(e);
         }
     }
+
     @Test
     public void testImport02FileNotFound() {
         File file = new File("hola");
@@ -130,6 +144,7 @@ class GardenTest {
             assertEquals(GardenException.FILE_NOT_FOUND, e.getMessage());
         }
     }
+
     @Test
     public void testImport02ErrorDuringProcessing() {
         String fileName = "archivo";
@@ -148,6 +163,7 @@ class GardenTest {
             throw new RuntimeException(e);
         }
     }
+
     @Test
     public void testExport02FILE_NOT_FOUND() {
 
@@ -162,6 +178,8 @@ class GardenTest {
         }
 
     }
+
+    // 03 METHODS
     @Test
     public void testSave() {
         garden = new Garden();
@@ -194,6 +212,7 @@ class GardenTest {
             file.delete();
         }
     }
+
     @Test
     public void testOpenFileNotFound() {
         try {
@@ -205,6 +224,7 @@ class GardenTest {
             assertEquals(GardenException.FILE_NOT_FOUND,e.getMessage());
         }
     }
+
     @Test
     public void testOpenErrorDuringProcessing() {
         String fileName = "archivo";
@@ -231,7 +251,7 @@ class GardenTest {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             writer.write("Sand -4 2\n");
             writer.close();
-            garden = garden.importt(file);
+            garden = garden.importt03(file);
         }
         catch (IOException e) {
             assertEquals(GardenException.NEGATIVE_ROW, e.getMessage());
@@ -239,13 +259,14 @@ class GardenTest {
             throw new RuntimeException(e);
         }
     }
+
     @Test
     public void testImportROW_IS_NOT_NUMBER() {
         File file = new File("hola");
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             writer.write("Flower e 2\n");
             writer.close();
-            garden = garden.importt(file);
+            garden = garden.importt03(file);
         }
         catch (IOException e) {
             assertEquals(GardenException.ROW_IS_NOT_NUMBER, e.getMessage());
@@ -253,13 +274,14 @@ class GardenTest {
             throw new RuntimeException(e);
         }
     }
+
     @Test
     public void testImportNONEXISTENT_CLASS() {
         File file = new File("hola");
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             writer.write("hOLA e 2\n");
             writer.close();
-            garden = garden.importt(file);
+            garden = garden.importt03(file);
         }
         catch (IOException e) {
             assertEquals(GardenException.NONEXISTENT_CLASS, e.getMessage());
@@ -267,6 +289,8 @@ class GardenTest {
             throw new RuntimeException(e);
         }
     }
+
+    //04 METHODS _ BONO METHODS
 
 
 }
